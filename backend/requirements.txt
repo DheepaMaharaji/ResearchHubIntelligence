@@ -1,0 +1,19 @@
+fastapi
+uvicorn
+pinecone-client
+langchain-openai
+langchain-community
+unstructured
+pdfminer.six
+pdf2image
+pikepdf
+networkx
+python-louvain
+scikit-learn
+# unstructured-inference # Temporarily disabled
+python-dotenv
+cohere
+groq
+lxml
+pydantic
+tiktoken
