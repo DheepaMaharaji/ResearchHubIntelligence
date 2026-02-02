@@ -10,10 +10,9 @@ What researchers actually want:
 Google Scholar is good at:
 Finding papers by keyword
 Counting citations
-But there are still gaps and cons that google scholar lacks \
+But we can add few features to advance research paper search like
 -> Explaining why papers matter \
 -> Grouping papers conceptually 
-
 -> Answering natural-language questions \
 -> Showing relationships between ideas 
 
