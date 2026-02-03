@@ -1,3 +1,6 @@
+The Research Intelligence Hub is an advanced Retrieval-Augmented Generation (RAG) platform designed to transform static PDF libraries into dynamic, interconnected knowledge graphs. Unlike standard RAG systems that rely solely on semantic similarity, this project introduces a Trust & Importance Layer—leveraging PageRank and community detection to surface not just "relevant" information, but the most authoritative insights in a field.
+
+
 1. Chunking Upgrade: Semantic vs. Page-Level
 
 Problem: PDF pages are arbitrary boundaries. A sentence starting on Page 1 and ending on Page 2 was split into two separate vectors, losing context. Headers and footers added noise.
