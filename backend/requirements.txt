@@ -1,8 +1,16 @@
 fastapi
 uvicorn
-pinecone-client
+pinecone
+langchain-pinecone
 langchain-openai
+langchain
 langchain-community
+langchain-experimental
+langchain-groq
+langchain-huggingface
+langchain-huggingface
+sentence-transformers
+transformers<5.0.0
 unstructured
 pdfminer.six
 pdf2image
@@ -12,7 +20,7 @@ python-louvain
 scikit-learn
 # unstructured-inference # Temporarily disabled
 python-dotenv
-cohere
+
 groq
 lxml
 pydantic

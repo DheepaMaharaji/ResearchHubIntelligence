@@ -1,7 +1,8 @@
 from pydantic import BaseModel
 from typing import List, Optional
-from langchain_openai import ChatOpenAI
-from langchain.prompts import ChatPromptTemplate
+# from langchain_openai import ChatOpenAI (Unused)
+# Replaced by ChatGroq in other files, but here it is unused.
+from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.documents import Document
 from backend.rag.prompts import MULTI_QUERY_PROMPT
 from backend.rag.embeddings import get_embedding_model

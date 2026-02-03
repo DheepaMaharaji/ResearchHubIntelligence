@@ -1,4 +1,4 @@
-from langchain.prompts import ChatPromptTemplate
+from langchain_core.prompts import ChatPromptTemplate
 
 # 1. The Research Synthesizer
 SYNTHESIZER_PROMPT = """

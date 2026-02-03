@@ -12,10 +12,19 @@ def get_index():
     if not index_name:
         raise ValueError("PINECONE_INDEX_NAME environment variable not set")
     
-    # Check if index exists, create if not (optional, but good for setup)
-    # Note: Creating index takes time, so usually we assume it exists or handle strictly.
-    # For this script, we'll assume it exists or just return the index object.
-    
+    existing_indexes = [i.name for i in pc.list_indexes()]
+    if index_name not in existing_indexes:
+        print(f"Index '{index_name}' does not exist. Creating...")
+        pc.create_index(
+            name=index_name,
+            dimension=384, # sentence-transformers/all-MiniLM-L6-v2
+            metric="cosine",
+            spec=ServerlessSpec(cloud="aws", region="us-east-1")
+        )
+        # Wait for index to be ready
+        while not pc.describe_index(index_name).status["ready"]:
+            time.sleep(1)
+            
     return pc.Index(index_name)
 
 def upsert_documents(documents: List[Document]):

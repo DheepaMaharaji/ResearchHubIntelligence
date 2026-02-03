@@ -2,8 +2,8 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from backend.rag.retreive import get_multi_query_retriever, retrieve_documents, rerank_documents
 from backend.rag.prompts import SYNTHESIZER_PROMPT, GRADER_PROMPT
-from langchain_openai import ChatOpenAI
-from langchain.prompts import ChatPromptTemplate
+from langchain_groq import ChatGroq
+from langchain_core.prompts import ChatPromptTemplate
 import os
 
 app = FastAPI(title="Interconnected Research Intelligence Hub")
@@ -11,12 +11,22 @@ app = FastAPI(title="Interconnected Research Intelligence Hub")
 
 class ChatRequest(BaseModel):
     message: str
-
+    user_level: str = "intermediate" # Options: beginner, intermediate, expert
 
 @app.post("/query")
 async def research_query(request: ChatRequest):
     user_query = request.message
-    llm = ChatOpenAI(model="gpt-4o", temperature=0)
+    llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0, api_key=os.environ.get("GROQ_API_KEY"))
+
+    # Determine Alpha based on User Level
+    # Beginner: Needs foundation (Trust Authority/Graph more) -> Low Alpha
+    # Expert: Needs specific details (Trust Semantic more) -> High Alpha
+    level_map = {
+        "beginner": 0.15,
+        "intermediate": 0.50,
+        "expert": 0.85
+    }
+    alpha = level_map.get(request.user_level.lower(), 0.50)
 
     # 1. Query Translation (Multi-Query)
     # Block: Query Translation (Red) from your diagram
@@ -25,7 +35,7 @@ async def research_query(request: ChatRequest):
     # 2. Retrieval & Reranking
     # Block: Retrieval (Green) from your diagram
     initial_docs = retrieve_documents(expanded_queries, os.getenv("PINECONE_INDEX_NAME"))
-    top_docs = rerank_documents(user_query, initial_docs, top_n=5)
+    top_docs = rerank_documents(user_query, initial_docs, top_n=5, alpha=alpha)
 
     if not top_docs:
         return {"answer": "I couldn't find any relevant research papers on this topic.", "sources": []}

@@ -3,14 +3,17 @@ import argparse
 import sys
 from dotenv import load_dotenv
 
+# Load env vars before importing backend modules that might use them
+load_dotenv()
+
 # Add the project root to sys.path to ensure imports work
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from backend.rag.processing import process_paper
-from backend.rag.database import upsert_documents
+from backend.database import upsert_documents
 
 def main():
-    load_dotenv()
+    # load_dotenv() # Moved to top level
     
     parser = argparse.ArgumentParser(description="Ingest research papers into the RAG system.")
     parser.add_argument("--file", type=str, help="Path to a specific PDF file to ingest.")

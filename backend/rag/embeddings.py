@@ -1,9 +1,10 @@
 import os
-from langchain_openai import OpenAIEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 
 def get_embedding_model():
     """
     Returns the embedding model to use for vectorization.
+    Uses local HuggingFace embeddings (sentence-transformers/all-MiniLM-L6-v2) 
+    to be compatible with Groq (which doesn't have an embedding API).
     """
-    # Ensure OPENAI_API_KEY is in env
-    return OpenAIEmbeddings(model="text-embedding-3-small")
+    return HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")

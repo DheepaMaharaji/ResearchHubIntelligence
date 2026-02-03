@@ -3,7 +3,10 @@ import community.community_louvain as community_louvain
 # Note: python-louvain package imports as community
 from typing import List, Dict, Any
 from groq import Groq
+from dotenv import load_dotenv
 import os
+
+load_dotenv()
 
 groq_client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 
@@ -23,8 +26,8 @@ class KnowledgeGraph:
         """
         try:
             completion = groq_client.chat.completions.create(
-                messages=[{"role": "user", "content": prompt}],a
-                model="llama3-8b-8192",
+                messages=[{"role": "user", "content": prompt}],
+                model="llama-3.1-8b-instant",
             )
             entities_str = completion.choices[0].message.content
             # Clean up
@@ -54,16 +57,33 @@ class KnowledgeGraph:
             self.graph.add_node(p_id, type="paper")
             
         # Add edges based on Jaccard similarity of entities or just shared entities
+        # Add edges based on Jaccard Similarity
         node_ids = list(paper_entities.keys())
         for i in range(len(node_ids)):
             for j in range(i+1, len(node_ids)):
                 id1 = node_ids[i]
                 id2 = node_ids[j]
                 
-                shared = paper_entities[id1].intersection(paper_entities[id2])
-                if len(shared) > 0:
-                    # Weight could be number of shared entities
-                    self.graph.add_edge(id1, id2, weight=len(shared), entities=list(shared))
+                entities1 = paper_entities[id1]
+                entities2 = paper_entities[id2]
+                
+                intersection = entities1.intersection(entities2)
+                union = entities1.union(entities2)
+                
+                # Pruning Rule 1: Must share more than 1 entity to avoid noise
+                if len(intersection) <= 1:
+                    continue
+                    
+                # Calculate Jaccard Index
+                if len(union) == 0:
+                    jaccard = 0.0
+                else:
+                    jaccard = len(intersection) / len(union)
+                    
+                # Pruning Rule 2: Similarity Threshold
+                if jaccard >= 0.2:
+                    # Weight is the Jaccard Index (0.2 to 1.0)
+                    self.graph.add_edge(id1, id2, weight=jaccard, entities=list(intersection))
 
     def detect_communities(self) -> Dict[int, List[str]]:
         """
