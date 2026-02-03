@@ -1,5 +1,4 @@
 1. Chunking Upgrade: Semantic vs. Page-Level
-Original State: The system used Page-Level Chunking.
 
 Problem: PDF pages are arbitrary boundaries. A sentence starting on Page 1 and ending on Page 2 was split into two separate vectors, losing context. Headers and footers added noise.
 Solution: Implemented Semantic Chunking using langchain-experimental.
@@ -9,13 +8,11 @@ Uses an embedding model helper to scan across the text.
 Detects "semantic break points" (sudden changes in embedding similarity) which correspond to topic shifts (e.g., Introduction -> Methods).
 Splits the text at these meaningful boundaries.
 2. Model Migration: OpenAI -> Groq (Llama)
-Original State: Relied on OpenAI (gpt-4o, text-embedding-3-small).
 
 Change: Migrated to Groq for LLM and Vision tasks to leverage high-speed inference with top-tier Open Source models (Llama 3/4).
 Vision Model: Upgraded to meta-llama/llama-4-scout-17b-16e-instruct for summarizing charts and images found in papers.
 Text Model: Upgraded retrieval and query expansion to use llama-3.3-70b-versatile.
 3. Embedding Migration: Local Embeddings
-Original State: OpenAI Embeddings (Cost per token).
 
 Problem: Groq does not offer an embedding API.
 Solution: Switched to HuggingFace Local Embeddings (sentence-transformers/all-MiniLM-L6-v2).
